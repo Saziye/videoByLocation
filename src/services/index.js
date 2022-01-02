@@ -16,7 +16,7 @@ export const fetchVideosService = payload => {
       Authorization: `client:auth2 ${GOOGLE_API_KEY}`,
     },
   };
-
+  console.log({config});
   return new Promise((resolve, reject) => {
     axios(config)
       .then(response => {

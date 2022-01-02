@@ -10,6 +10,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchVideoAction} from '../../actions/youtubeAction';
 import VideoItem from '../../components/VideoItem';
+import ErrorComponent from '../../components/ErrorComponent';
 
 export default function VideosScreen({navigation, route}) {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ export default function VideosScreen({navigation, route}) {
 
   return (
     <View style={styles.container}>
+      {youtube.error && <ErrorComponent error={youtube.error}/>}
       {youtube.loading && isLoading ? (
         <ActivityIndicator style={styles.indicatorContianer} size={'large'} color={'red'} />
       ) : (
