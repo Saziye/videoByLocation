@@ -6,9 +6,11 @@ export const fetchVideosService = payload => {
     method: 'get',
     url: `https://youtube.googleapis.com/youtube/v3/search?location=${
       payload.payload.coords.latitude + ',' + payload.payload.coords.longitude
-    }&locationRadius=10km&maxResults=${
-      payload.payload.maxResults
-    }&type=video&key=${GOOGLE_API_KEY}`,
+    }&locationRadius=10km&maxResults=50${
+      payload.payload.nextPageToken
+        ? '&nextPageToken=' + payload.payload.nextPageToken
+        : ''
+    }&type=video&key=${GOOGLE_API_KEY}&part=snippet`,
     headers: {
       Accept: 'application/json',
       Authorization: `client:auth2 ${GOOGLE_API_KEY}`,
