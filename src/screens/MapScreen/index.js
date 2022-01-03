@@ -1,20 +1,55 @@
-import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Button} from 'react-native';
-import MapView, {PROVIDER_GOOGLE, Marker, LatLng} from 'react-native-maps';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  PermissionsAndroid,
+} from 'react-native';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
 export default function MapScreen({navigation}) {
+  let mapRef = useRef();
 
   const [coord, setCoord] = useState({
-    latitude: 41.0391683,
-    longitude: 28.9982707,
-    latitudeDelta: 0.02,
-    longitudeDelta: 0.02,
+    latitude: 37.874641,
+    longitude: 32.493156,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
   });
 
   useEffect(() => {
-    getCurrentLocation();
+    async function fetchPermission() {
+      await requestLocationPermission();
+      getCurrentLocation();
+    }
+    fetchPermission();
+    // mapRef.current.animateToRegion({
+    //   coord,
+    // });
   }, []);
+
+  async function requestLocationPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location App',
+          message: 'Location App access to your location ',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the location');
+      } else {
+        console.log('location permission denied');
+        alert('Location permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
 
   function getCurrentLocation() {
     Geolocation.getCurrentPosition(
@@ -25,9 +60,14 @@ export default function MapScreen({navigation}) {
           longitude: c.coords.longitude,
         });
       },
-      error => console.log(error),
+      error => {
+        // alert(error.message);
+        console.log({error});
+      },
       {
         enableHighAccuracy: true,
+        timeout: 6000,
+        maximumAge: 10000,
       },
     );
   }
@@ -37,23 +77,39 @@ export default function MapScreen({navigation}) {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar barStyle="dark-content" backgroundColor={'transparent'} />
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1, borderWidth: 1}}
         initialRegion={coord}
-        onRegionChange={onRegionChange}>
+        onRegionChange={onRegionChange}
+        ref={mapRef}>
         <Marker coordinate={coord} />
       </MapView>
-      <View style={{padding: 10}}>
-        <Button
-          onPress={() => navigation.push('Videos',{coord})}
-          title="Bu Adresi Kullan"
-          color="#841584"
-        />
-      </View>
-    </View>
+      <TouchableOpacity  onPress={() => navigation.push('Videos',{coord})} style={styles.buttonContainer}>
+        <Text style={styles.buttonText}>Use This Location</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  buttonText: {
+    color: '#fff',
+    alignSelf: 'center',
+    fontSize: 16,
+    fontWeight: '400',
+  },
+  buttonContainer: {
+    padding: 5,
+    margin:5,
+    backgroundColor: '#197278',
+    borderRadius: 50,
+    borderTopRightRadius: 0,
+    height: 50,
+    width: 150,
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+});

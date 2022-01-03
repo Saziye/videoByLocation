@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, Pressable, StyleSheet} from 'react-native';
+import {View, Text, Image, Pressable, Linking, StyleSheet} from 'react-native';
 import moment from 'moment';
 
 export default VideoItem = ({video}) => {
-  function openVideoPage() {}
+
+  function openVideoPage() {
+    Linking.openURL(`https://www.youtube.com/embed/${video.id.videoId}`);
+  }
 
   return (
     <Pressable onPress={openVideoPage} style={styles.videoCard}>
@@ -17,11 +20,13 @@ export default VideoItem = ({video}) => {
       <View style={styles.titleRow}>
         {/* Middle container: Title, subtitle, etc. */}
         <View style={styles.midleContainer}>
-          <Text style={styles.subtitle}>{video.snippet.channelTitle}</Text>
           <Text style={styles.title}>{video.snippet.title}</Text>
-          <Text style={styles.subtitle}>
-            {moment(video.snippet.publishedAt).fromNow()}
-          </Text>
+          <View style={styles.subtitleContainer}>
+            <Text style={styles.subtitle}>{video.snippet.channelTitle}</Text>
+            <Text style={styles.subtitle}>
+              {moment(video.snippet.publishedAt).fromNow()}
+            </Text>
+          </View>
         </View>
         {/* Icon */}
       </View>
@@ -31,7 +36,9 @@ export default VideoItem = ({video}) => {
 
 const styles = StyleSheet.create({
   videoCard: {
-    marginVertical: 1,
+    // marginVertical: 1,
+    borderBottomWidth: 1,
+    borderColor: 'grey',
   },
   thumbnail: {
     width: '100%',
@@ -39,22 +46,26 @@ const styles = StyleSheet.create({
   },
   titleRow: {
     flexDirection: 'row',
-    padding: 10,
-    backgroundColor: 'black',
+    padding: 5,
+    backgroundColor: '#283D3B',
+    paddingVertical: 8,
   },
   midleContainer: {
-    marginHorizontal: 10,
     flex: 1,
   },
   title: {
     color: 'white',
-    fontSize: 18,
-    fontWeight: '500',
-    marginBottom: 5,
+    fontSize: 15,
+    fontWeight: '400',
+    width: '100%',
+  },
+  subtitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   subtitle: {
     color: 'grey',
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '300',
   },
 });
