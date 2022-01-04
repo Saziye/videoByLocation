@@ -6,12 +6,13 @@ import {
   SafeAreaView,
   StatusBar,
   PermissionsAndroid,
+  Platform
 } from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
 export default function MapScreen({navigation}) {
-  let mapRef = useRef();
+  const mapRef = useRef(null);
 
   const [coord, setCoord] = useState({
     latitude: 37.874641,
@@ -21,30 +22,32 @@ export default function MapScreen({navigation}) {
   });
 
   useEffect(() => {
+    mapRef.current.animateToRegion(coord,300);
+  }, [coord])
+
+  useEffect(() => {
     async function fetchPermission() {
       await requestLocationPermission();
       getCurrentLocation();
     }
     fetchPermission();
-    // mapRef.current.animateToRegion({
-    //   coord,
-    // });
   }, []);
 
   async function requestLocationPermission() {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location App',
-          message: 'Location App access to your location ',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the location');
-      } else {
-        console.log('location permission denied');
-        alert('Location permission denied');
+      if(Platform.OS == 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location App',
+            message: 'Location App access to your location ',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the location');
+        } else {
+          console.log('location permission denied');
+        }
       }
     } catch (err) {
       console.warn(err);
@@ -70,6 +73,7 @@ export default function MapScreen({navigation}) {
         maximumAge: 10000,
       },
     );
+
   }
 
   function onRegionChange(region) {
@@ -105,8 +109,8 @@ const styles = StyleSheet.create({
     padding: 5,
     margin:5,
     backgroundColor: '#197278',
-    borderRadius: 50,
-    borderTopRightRadius: 0,
+    borderRadius: Platform.OS == 'ios' ? 30 : 50,
+    borderBottomRightRadius: 0,
     height: 50,
     width: 150,
     justifyContent: 'center',

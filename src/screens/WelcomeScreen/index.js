@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  Platform
 } from 'react-native';
 
 export default function WelcomeScreen({navigation}) {
@@ -14,8 +15,8 @@ export default function WelcomeScreen({navigation}) {
     <SafeAreaView style={styles.container}>
       <StatusBar animated={true} backgroundColor={'#197278'} />
       <View style={styles.textContainer}>
-        <Text style={styles.titleText}>Choose Your Location</Text>
-        <Text style={styles.subTitleText}>and</Text>
+        <Text style={styles.titleText}>Youtube Videos by Location</Text>
+        <Text style={styles.subTitleText}>choose a location</Text>
         <Text style={styles.titleText}>Find Videos</Text>
       </View>
       <View style={styles.imageContainer}>
@@ -25,7 +26,7 @@ export default function WelcomeScreen({navigation}) {
         />
       </View>
       <TouchableOpacity onPress={() => navigation.replace('Map')} style={styles.buttonContainer}>
-        <Text style={styles.buttonText}>Start</Text>
+        <Text style={styles.buttonText}>NEXT</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: 10,
     backgroundColor: '#fff',
-    borderRadius: 50,
+    borderRadius: Platform.OS == 'ios' ? 30 : 50,
     borderBottomRightRadius: 0,
     height: 60,
     width: 150,
