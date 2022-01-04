@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   StatusBar,
   PermissionsAndroid,
-  Platform
+  Platform,
 } from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -31,7 +31,7 @@ export default function MapScreen({navigation}) {
 
   async function requestLocationPermission() {
     try {
-      if(Platform.OS == 'android') {
+      if (Platform.OS == 'android') {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           {
@@ -60,7 +60,6 @@ export default function MapScreen({navigation}) {
         });
       },
       error => {
-        // alert(error.message);
         console.log({error});
       },
       {
@@ -69,12 +68,14 @@ export default function MapScreen({navigation}) {
         maximumAge: 10000,
       },
     );
-    mapRef.current.animateToRegion({
-      ...coord,
-      latitude: c.coords.latitude,
-      longitude: c.coords.longitude,
-    },300);
-
+    mapRef?.current?.animateToRegion(
+      {
+        ...coord,
+        latitude: c.coords.latitude,
+        longitude: c.coords.longitude,
+      },
+      300,
+    );
   }
 
   function onRegionChange(region) {
@@ -89,10 +90,13 @@ export default function MapScreen({navigation}) {
         style={{flex: 1, borderWidth: 1}}
         initialRegion={coord}
         onRegionChange={onRegionChange}
+        showsUserLocation={true}
         ref={mapRef}>
         <Marker coordinate={coord} />
       </MapView>
-      <TouchableOpacity  onPress={() => navigation.push('Videos',{coord})} style={styles.buttonContainer}>
+      <TouchableOpacity
+        onPress={() => navigation.push('Videos', {coord})}
+        style={styles.buttonContainer}>
         <Text style={styles.buttonText}>Use This Location</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -108,7 +112,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 5,
-    margin:5,
+    margin: 5,
     backgroundColor: '#197278',
     borderRadius: Platform.OS == 'ios' ? 30 : 50,
     borderBottomRightRadius: 0,
