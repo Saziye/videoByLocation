@@ -1,10 +1,19 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 
 export default function ErrorComponent({error}) {
-    return (
-        <View style={{flex:1, width:'100%',height:'100', justifyContent:'center'}}>
-            <Text>{error.message}</Text>
-        </View>
-    )
+  return (
+    <View style={styles.container}>
+      <Text>{error.message}</Text>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
