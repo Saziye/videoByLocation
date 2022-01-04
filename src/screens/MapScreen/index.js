@@ -22,10 +22,6 @@ export default function MapScreen({navigation}) {
   });
 
   useEffect(() => {
-    mapRef.current.animateToRegion(coord,300);
-  }, [coord])
-
-  useEffect(() => {
     async function fetchPermission() {
       await requestLocationPermission();
       getCurrentLocation();
@@ -73,6 +69,11 @@ export default function MapScreen({navigation}) {
         maximumAge: 10000,
       },
     );
+    mapRef.current.animateToRegion({
+      ...coord,
+      latitude: c.coords.latitude,
+      longitude: c.coords.longitude,
+    },300);
 
   }
 
